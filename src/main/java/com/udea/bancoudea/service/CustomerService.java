@@ -32,9 +32,23 @@ public class CustomerService {
     }
 
     public CustomerDTO createCustomer(CustomerDTO customerDTO){
+        if(customerDTO.getBalance()==null){
+            throw new IllegalArgumentException("Balance cannot be null");
+        }
         Customer customer = customerMapper.toEntity(customerDTO);
         return customerMapper.toDTO(customerRepository.save(customer));
     }
 
+    public CustomerDTO updateCustomer(CustomerDTO customerDTO){
+        Customer customer = customerMapper.toEntity(customerDTO);
+        return customerMapper.toDTO(customerRepository.save(customer));
+    }
+
+    public void deleteCustomer(Long id){
+        customerRepository.deleteById(id);
+    }
+
 
 }
+
+

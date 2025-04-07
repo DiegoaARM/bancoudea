@@ -1,8 +1,10 @@
 package com.udea.bancoudea.service;
 
 import com.udea.bancoudea.DTO.TransactionDTO;
+import com.udea.bancoudea.DTO.TransferRequestDTO;
 import com.udea.bancoudea.entity.Customer;
 import com.udea.bancoudea.entity.Transaction;
+import com.udea.bancoudea.mapper.TransactionMapper;
 import com.udea.bancoudea.repository.CustomerRepository;
 import com.udea.bancoudea.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,60 +20,67 @@ public class TransactionService {
     private TransactionRepository transactionRepository;
 
     @Autowired
+    private TransactionMapper transactionMapper;
+
+    @Autowired
     private CustomerRepository customerRepository;
 
-    public TransactionDTO transferMoney(TransactionDTO transactionDTO) {
-        //validar que los numeros de cuenta no sean nulos
-        if(transactionDTO.getSenderAccountNumber()==null || transactionDTO.getReceiverAccountNumber()==null){
+    public List<TransactionDTO> getAllTransactions(){
+        return transactionRepository.findAll().stream()
+                .map(transactionMapper::toDTO).toList();
+    }
+
+    public TransactionDTO transferMoney(TransferRequestDTO transferRequestDTO){
+        //validate that the numbers of the account not being nulls
+        if(transferRequestDTO.getReceiverAccountNumber()==null || transferRequestDTO.getSenderAccountNumber()==null){
             throw new IllegalArgumentException("Sender Account Number or Receiver Account Number cannot be null");
         }
 
-        //Buscar los clientes por numero de cuenta
-        Customer sender = customerRepository.findByAccountNumber(transactionDTO.getSenderAccountNumber())
-                .orElseThrow(()-> new IllegalArgumentException("Sender Account Number not found"));
+        //find the clients by number of account
+        Customer sender = customerRepository.findByAccountNumber(transferRequestDTO.getSenderAccountNumber())
+                .orElseThrow(()->new RuntimeException("Sender Account Number not found"));
 
-        Customer receiver = customerRepository.findByAccountNumber(transactionDTO.getReceiverAccountNumber())
-                .orElseThrow(()-> new IllegalArgumentException("Receiver Account Number not found"));
+        Customer receiver = customerRepository.findByAccountNumber(transferRequestDTO.getReceiverAccountNumber())
+                .orElseThrow(()->new RuntimeException("Receiver Account Number not found"));
 
-        //Validar que el remitente tenga saldo suficiente
-        if(sender.getBalance() < transactionDTO.getAmount()){
+        //validate if sender has enough money
+        if(sender.getBalance() < transferRequestDTO.getAmount()){
             throw new IllegalArgumentException("Sender Balance not enough");
         }
 
-        //realiza la transferencia
-        sender.setBalance(sender.getBalance() - transactionDTO.getAmount());
-        receiver.setBalance(receiver.getBalance() + transactionDTO.getAmount());
+        //make the transfer
+        sender.setBalance(sender.getBalance() - transferRequestDTO.getAmount());
+        receiver.setBalance(receiver.getBalance() + transferRequestDTO.getAmount());
 
-        //Guardar los cambios en las cuentas
+        //save the changes on the accounts
         customerRepository.save(sender);
         customerRepository.save(receiver);
 
-        //Crear y guardar la transaccion
+        //create and save the transaction
         Transaction transaction = new Transaction();
         transaction.setSenderAccountNumber(sender.getAccountNumber());
         transaction.setReceiverAccountNumber(receiver.getAccountNumber());
-        transaction.setAmount(transactionDTO.getAmount());
-        transaction= transactionRepository.save(transaction);
+        transaction.setAmount(transferRequestDTO.getAmount());
+        transactionRepository.save(transaction);
 
-        //Devolver la transaccion creada como un DTO
-        TransactionDTO  savedTransaction = new TransactionDTO();
-        savedTransaction.setId(transaction.getId());
-        savedTransaction.setSenderAccountNumber(transaction.getSenderAccountNumber());
-        savedTransaction.setReceiverAccountNumber(transaction.getReceiverAccountNumber());
-        savedTransaction.setAmount(transaction.getAmount());
-        return savedTransaction;
+        //return the transaction created as a DTO
+        TransactionDTO savedTransactionDTO = new TransactionDTO();
+        savedTransactionDTO.setSenderAccountNumber(sender.getAccountNumber());
+        savedTransactionDTO.setReceiverAccountNumber(receiver.getAccountNumber());
+        savedTransactionDTO.setAmount(transferRequestDTO.getAmount());
+        return savedTransactionDTO;
 
     }
 
-    public List<TransactionDTO> getTransactionsForAccount(String accountNumber) {
+    public List<TransactionDTO> getTransactionsForAccounts(String accountNumber){
         List<Transaction> transactions = transactionRepository.findBySenderAccountNumberOrReceiverAccountNumber(accountNumber,accountNumber);
         return transactions.stream().map(transaction -> {
-            TransactionDTO dto = new TransactionDTO();
-            dto.setId(transaction.getId());
-            dto.setSenderAccountNumber(transaction.getSenderAccountNumber());
-            dto.setReceiverAccountNumber(transaction.getReceiverAccountNumber());
-            dto.setAmount(transaction.getAmount());
-            return dto;
+            TransactionDTO transactionDTO = new TransactionDTO();
+            transactionDTO.setId(transaction.getId());
+            transactionDTO.setSenderAccountNumber(transaction.getSenderAccountNumber());
+            transactionDTO.setReceiverAccountNumber(transaction.getReceiverAccountNumber());
+            transactionDTO.setAmount(transaction.getAmount());
+            return transactionDTO;
         }).collect(Collectors.toList());
     }
 

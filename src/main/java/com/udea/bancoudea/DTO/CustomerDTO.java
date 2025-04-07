@@ -1,20 +1,21 @@
 package com.udea.bancoudea.DTO;
 
 public class CustomerDTO {
+
     private Long id;
+    private String accountNumber;
     private String firstName;
     private String lastName;
-    private String accountNumber;
     private Double balance;
 
     public CustomerDTO() {
     }
 
-    public CustomerDTO(Long id, String firstName, String lastName, String accountNumber, Double balance) {
+    public CustomerDTO(Long id, String accountNumber, String firstName, String lastName, Double balance) {
         this.id = id;
+        this.accountNumber = accountNumber;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.accountNumber = accountNumber;
         this.balance = balance;
     }
 
@@ -24,6 +25,14 @@ public class CustomerDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public String getFirstName() {
@@ -40,14 +49,6 @@ public class CustomerDTO {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
     }
 
     public Double getBalance() {

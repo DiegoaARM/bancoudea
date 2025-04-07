@@ -1,11 +1,18 @@
 package com.udea.bancoudea.DTO;
 
 public class TransferRequestDTO {
+
     private String senderAccountNumber;
     private String receiverAccountNumber;
     private Double amount;
 
     public TransferRequestDTO() {
+    }
+
+    public TransferRequestDTO(String senderAccountNumber, String receiverAccountNumber, Double amount) {
+        this.senderAccountNumber = senderAccountNumber;
+        this.receiverAccountNumber = receiverAccountNumber;
+        this.amount = amount;
     }
 
     public String getSenderAccountNumber() {

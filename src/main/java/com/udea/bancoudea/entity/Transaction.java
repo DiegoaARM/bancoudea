@@ -1,9 +1,9 @@
 package com.udea.bancoudea.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "transactions")
@@ -11,27 +11,31 @@ public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-private Long id;
-@Column(nullable = false)
-private String senderAccountNumber;
-@Column(nullable = false)
-private String receiverAccountNumber;
-@Column(nullable = false)
-private Double amount;
-@Column(nullable = false)
-private LocalDateTime timestamp;
+    private Long id;
+
+    @Column(nullable = false)
+    private String senderAccountNumber;
+
+    @Column(nullable = false)
+    private String receiverAccountNumber;
+
+    @Column(nullable = false)
+    private Double amount;
+
+    @CreationTimestamp
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
 
     public Transaction() {
     }
 
-    public Transaction(Long id, String senderAccountNumber, String receiverAccountNumber, Double amount, LocalDateTime timestamp) {
-        this.id = id;
-        this.senderAccountNumber = senderAccountNumber;
-        this.receiverAccountNumber = receiverAccountNumber;
-        this.amount = amount;
+    public Transaction(LocalDateTime timestamp, Double amount, String receiverAccountNumber, String senderAccountNumber, Long id) {
         this.timestamp = timestamp;
+        this.amount = amount;
+        this.receiverAccountNumber = receiverAccountNumber;
+        this.senderAccountNumber = senderAccountNumber;
+        this.id = id;
     }
-
 
     public Long getId() {
         return id;

@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TransactionDTO {
+
     private Long id;
     private String senderAccountNumber;
     private String receiverAccountNumber;
