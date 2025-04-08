@@ -1,21 +1,17 @@
 package com.udea.bancoudea.DTO;
 
-import java.util.Random;
-
-public class CustomerDTO {
+public class PostCustomerDTO {
 
     private Long id;
-    private String accountNumber;
     private String firstName;
     private String lastName;
     private Double balance;
 
-    public CustomerDTO() {
+    public PostCustomerDTO() {
     }
 
-    public CustomerDTO(Long id, String accountNumber, String firstName, String lastName, Double balance) {
+    public PostCustomerDTO(Long id, String firstName, String lastName, Double balance) {
         this.id = id;
-        this.accountNumber = accountNumber;
         this.firstName = firstName;
         this.lastName = lastName;
         this.balance = balance;
@@ -27,14 +23,6 @@ public class CustomerDTO {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
     }
 
     public String getFirstName() {
