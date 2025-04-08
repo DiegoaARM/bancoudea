@@ -74,4 +74,5 @@ public class Customer {
     public void setBalance(Double balance) {
         this.balance = balance;
     }
+
 }
