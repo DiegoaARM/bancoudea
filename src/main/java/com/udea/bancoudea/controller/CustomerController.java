@@ -1,6 +1,7 @@
 package com.udea.bancoudea.controller;
 
 import com.udea.bancoudea.DTO.CustomerDTO;
+import com.udea.bancoudea.DTO.PostCustomerDTO;
 import com.udea.bancoudea.service.CustomerService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +34,8 @@ public class CustomerController {
 
     //create a new client
     @PostMapping
-    public ResponseEntity<CustomerDTO> createCustomer(@RequestBody CustomerDTO customerDTO){
-        return ResponseEntity.ok(customerFacade.createCustomer(customerDTO));
+    public ResponseEntity<CustomerDTO> createCustomer(@RequestBody PostCustomerDTO postCustomerDTO){
+        return ResponseEntity.ok(customerFacade.createCustomer(postCustomerDTO));
     }
 
     @PutMapping

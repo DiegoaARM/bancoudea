@@ -33,28 +33,38 @@ public class CustomerService {
                 .orElseThrow(()->new RuntimeException("Cliente no encontrado"));
     }
 
-    public CustomerDTO createCustomer(PostCustomerDTO postCustomerDTO){
-        if(postCustomerDTO.getBalance()==null){
+    public CustomerDTO createCustomer(PostCustomerDTO postCustomerDTO) {
+        if (postCustomerDTO.getBalance() == null) {
             throw new IllegalArgumentException("Balance cannot be null");
         }
+
         CustomerDTO customerDTO = new CustomerDTO();
         customerDTO.setId(postCustomerDTO.getId());
         customerDTO.setBalance(postCustomerDTO.getBalance());
         customerDTO.setFirstName(postCustomerDTO.getFirstName());
         customerDTO.setLastName(postCustomerDTO.getLastName());
 
-        Random random = new Random();
-        StringBuilder accountNumber = new StringBuilder();
-
-        // Generamos un número de cuenta de 10 dígitos
-        for (int i = 0; i < 10; i++) {
-            accountNumber.append(random.nextInt(10)); // agrega un dígito del 0 al 9
-        }
-
-        customerDTO.setAccountNumber(accountNumber.toString());
+        // Generar un número de cuenta único
+        String accountNumber = generateUniqueAccountNumber();
+        customerDTO.setAccountNumber(accountNumber);
 
         Customer customer = customerMapper.toEntity(customerDTO);
         return customerMapper.toDTO(customerRepository.save(customer));
+    }
+
+    private String generateUniqueAccountNumber() {
+        Random random = new Random();
+        String accountNumber;
+
+        do {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < 10; i++) {
+                builder.append(random.nextInt(10));
+            }
+            accountNumber = builder.toString();
+        } while (customerRepository.existsByAccountNumber(accountNumber));
+
+        return accountNumber;
     }
 
     public CustomerDTO updateCustomer(CustomerDTO customerDTO){

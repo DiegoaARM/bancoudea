@@ -80,6 +80,7 @@ public class TransactionService {
             transactionDTO.setSenderAccountNumber(transaction.getSenderAccountNumber());
             transactionDTO.setReceiverAccountNumber(transaction.getReceiverAccountNumber());
             transactionDTO.setAmount(transaction.getAmount());
+            transactionDTO.setTimestamp(transaction.getTimestamp());
             return transactionDTO;
         }).collect(Collectors.toList());
     }
