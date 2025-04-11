@@ -32,8 +32,17 @@ public class TransactionService {
 
     public TransactionDTO transferMoney(TransferRequestDTO transferRequestDTO){
         //validate that the numbers of the account not being nulls
-        if(transferRequestDTO.getReceiverAccountNumber()==null || transferRequestDTO.getSenderAccountNumber()==null){
-            throw new IllegalArgumentException("Sender Account Number or Receiver Account Number cannot be null");
+        if (transferRequestDTO.getReceiverAccountNumber() == null ||
+                transferRequestDTO.getSenderAccountNumber() == null) {
+            throw new IllegalArgumentException("Sender and receiver account numbers are required");
+        }
+
+        if (transferRequestDTO.getSenderAccountNumber().equals(transferRequestDTO.getReceiverAccountNumber())) {
+            throw new IllegalArgumentException("Sender and receiver accounts must be different");
+        }
+
+        if (transferRequestDTO.getAmount() == null || transferRequestDTO.getAmount() <= 0) {
+            throw new IllegalArgumentException("Transfer amount must be greater than 0");
         }
 
         //find the clients by number of account
