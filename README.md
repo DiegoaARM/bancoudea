@@ -20,7 +20,7 @@ Cambiar ```tu_usuario``` y ```tu_clave``` con las correspondientes a tu mysql.
 Ejecutar el proyecto desde tu IDE preferido o con Maven:
 
 ```bash
-spring-boot:run
+mvn spring-boot:run
 ```
 
 ## 🛠️ Tecnologías utilizadas
